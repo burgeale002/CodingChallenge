@@ -40,6 +40,7 @@ void Converter::scanInput() {
 
 string Converter::intoNumerals(int bigNum) {
     vector<Numeral> fullString;
+    //list of all the values, biggest to smallest
     vector<Numeral> listNumerals;
     listNumerals.push_back(Numeral('M'));
     listNumerals.push_back(Numeral('D'));
@@ -50,11 +51,14 @@ string Converter::intoNumerals(int bigNum) {
     listNumerals.push_back(Numeral('I'));
 
     bool nothing=false;
+    //test every value
+    //used an iterative loop to gain access to before and after the current element
     for(unsigned int n=0; n<listNumerals.size(); n++) {
         nothing=false;
         if(bigNum==0){
             break;
         }
+        //if the number is 1 to stop problems it has its own thing
         else if(listNumerals[n].getValue()==1&&bigNum<4){
             for(int i=bigNum; i>0; i--) {
                 bigNum = bigNum - 1;
@@ -67,15 +71,18 @@ string Converter::intoNumerals(int bigNum) {
             fullString.push_back(listNumerals[n-1]);
             //cout << listNumerals[n].toString() << " " << listNumerals[n-1].toString() << " " << bigNum << endl;
         }
-        //biggest to smallest
+
+        //sees if there is anything that can be done, bool nothing sees if no action was taken the previous loop
         while(bigNum>=listNumerals[n+1].getValue()&&listNumerals[n].getValue()!=1&&!nothing){
-            //if it is the number
+            //if it is the number finish
             if(bigNum==listNumerals[n].getValue()){
                 fullString.push_back(listNumerals[n]);
                 bigNum=bigNum-listNumerals[n].getValue();
                 //cout << "Final" << listNumerals[n].toString() << " " << bigNum << endl;
             }
-            //adds two the one before minize this one
+
+            //next three situations go by if a value can be added going from the biggest to the smallest
+            //adds the one after and before
             if(n!=0&&bigNum-(listNumerals[n-1].getValue()-listNumerals[n+1].getValue())>=0){
                 int temp=listNumerals[n-1].getValue()-listNumerals[n+1].getValue();
                 fullString.push_back(listNumerals[n+1]);
@@ -83,7 +90,7 @@ string Converter::intoNumerals(int bigNum) {
                 bigNum = bigNum - temp;
                 //cout << listNumerals[n+1].toString() << " " << listNumerals[n-1].toString() << " " << bigNum << endl;
             }
-            //adds two the one before minize this one
+            //adds this one and the one before
             else if(n!=0&&bigNum-(listNumerals[n-1].getValue()-listNumerals[n].getValue())>=0&&listNumerals[n-1].getValue()-listNumerals[n].getValue()!=listNumerals[n].getValue()) {
                 int temp = listNumerals[n - 1].getValue() - listNumerals[n].getValue();
                 fullString.push_back(listNumerals[n]);
@@ -91,6 +98,7 @@ string Converter::intoNumerals(int bigNum) {
                 bigNum = bigNum - temp;
                 //cout << listNumerals[n].toString() << " " << listNumerals[n - 1].toString() << " " << bigNum << endl;
             }
+            //just adds this one
             else if(bigNum-listNumerals[n].getValue()>=0) {
                 fullString.push_back(listNumerals[n]);
                 bigNum = bigNum - listNumerals[n].getValue();
@@ -104,6 +112,7 @@ string Converter::intoNumerals(int bigNum) {
 
 
     }
+    //convert the vector into a string to output
     string temp;
     for(auto& n:fullString){
         char c=n.toString().at(0);
